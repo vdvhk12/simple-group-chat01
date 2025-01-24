@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chat.backend.domain.member.dto.MemberDto;
 import com.chat.backend.domain.member.dto.MemberForm;
+import com.chat.backend.domain.member.dto.MemberSimpleDto;
 import com.chat.backend.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,12 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public ResponseEntity<MemberDto> save(@RequestBody MemberForm memberForm) {
+	public ResponseEntity<MemberSimpleDto> save(@RequestBody MemberForm memberForm) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(memberService.join(memberForm));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<MemberDto> getMember(@PathVariable("id") Long id) {
+	public ResponseEntity<MemberSimpleDto> getMember(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(memberService.findById(id));
 	}
 }
