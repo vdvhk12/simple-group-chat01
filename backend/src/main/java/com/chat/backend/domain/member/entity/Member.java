@@ -3,7 +3,7 @@ package com.chat.backend.domain.member.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.chat.backend.domain.groupmember.entity.ClubMember;
+import com.chat.backend.domain.clubmember.entity.ClubMember;
 import com.chat.backend.global.entity.BaseEntity;
 
 import jakarta.persistence.CascadeType;

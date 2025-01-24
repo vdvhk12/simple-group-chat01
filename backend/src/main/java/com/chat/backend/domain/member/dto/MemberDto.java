@@ -2,7 +2,7 @@ package com.chat.backend.domain.member.dto;
 
 import java.util.List;
 
-import com.chat.backend.domain.groupmember.entity.ClubMember;
+import com.chat.backend.domain.clubmember.entity.ClubMember;
 import com.chat.backend.domain.member.entity.Member;
 
 import lombok.Builder;
