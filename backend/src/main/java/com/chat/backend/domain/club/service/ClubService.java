@@ -10,8 +10,10 @@ import com.chat.backend.domain.club.dto.ClubDto;
 import com.chat.backend.domain.club.dto.ClubForm;
 import com.chat.backend.domain.club.entity.Club;
 import com.chat.backend.domain.club.repository.ClubRepository;
+import com.chat.backend.domain.clubmember.dto.ClubMemberDto;
 import com.chat.backend.domain.clubmember.entity.ClubMember;
 import com.chat.backend.domain.clubmember.entity.ClubMemberRole;
+import com.chat.backend.domain.clubmember.entity.repository.ClubMemberRepository;
 import com.chat.backend.domain.member.entity.Member;
 import com.chat.backend.domain.member.repository.MemberRepository;
 
@@ -23,6 +25,7 @@ public class ClubService {
 
 	private final ClubRepository clubRepository;
 	private final MemberRepository memberRepository;
+	private final ClubMemberRepository clubMemberRepository;
 
 	@Transactional
 	public ClubDto create(Long id, ClubForm clubForm) {
@@ -30,7 +33,7 @@ public class ClubService {
 		Club club = Club.of(clubForm.name(), clubForm.description(), member);
 
 
-		ClubMember clubMember = ClubMember.of(club, member, ClubMemberRole.MEMBER);
+		ClubMember clubMember = ClubMember.of(club, member, ClubMemberRole.MANAGER);
 		club.addMember(clubMember);
 
 		return ClubDto.from(clubRepository.save(club));
@@ -44,5 +47,35 @@ public class ClubService {
 	@Transactional(readOnly = true)
 	public ClubDto getClub(Long id) {
 		return ClubDto.from(Objects.requireNonNull(clubRepository.findById(id).orElse(null)));
+	}
+
+	@Transactional
+	public ClubMemberDto createApplicationToClub(Long id, Long memberId) {
+
+		Club club = clubRepository.findById(id).orElse(null);
+
+		Member member = memberRepository.findById(memberId).orElse(null);
+
+		ClubMember clubMember = ClubMember.of(club, member, ClubMemberRole.GUEST);
+
+		assert club != null;
+		club.addMember(clubMember);
+
+		clubRepository.save(club);
+
+		return ClubMemberDto.from(clubMember);
+	}
+
+	@Transactional
+	public ClubDto approve(Long id, Long memberId) {
+		ClubMember clubMember = clubMemberRepository.findByClubIdAndMemberId(id, memberId).orElse(null);
+		assert clubMember != null;
+
+		clubMember.approve();
+
+		Club club = clubRepository.findById(id).orElse(null);
+		assert club != null;
+
+		return ClubDto.from(club);
 	}
 }

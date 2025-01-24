@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.chat.backend.domain.club.dto.ClubDto;
 import com.chat.backend.domain.club.dto.ClubForm;
 import com.chat.backend.domain.club.service.ClubService;
+import com.chat.backend.domain.clubmember.dto.ClubMemberDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,5 +39,19 @@ public class ClubController {
 	@GetMapping("/{id}")
 	public ResponseEntity<ClubDto> getClub(@PathVariable("id") Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(clubService.getClub(id));
+	}
+
+	@PostMapping("/{id}/application/{memberId}")
+	public ResponseEntity<ClubMemberDto> createApplication(@PathVariable("id") Long id,
+		@PathVariable("memberId") Long memberId) {
+		ClubMemberDto application = clubService.createApplicationToClub(id, memberId);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(application);
+	}
+
+	@GetMapping("/{id}/approve/{memberId}")
+	public ResponseEntity<ClubDto> approve(@PathVariable("id") Long id, @PathVariable("memberId") Long memberId) {
+		ClubDto approve = clubService.approve(id, memberId);
+		return ResponseEntity.status(HttpStatus.OK).body(approve);
 	}
 }

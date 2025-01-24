@@ -62,4 +62,9 @@ public class ClubMember extends BaseEntity {
 			club.getMembers().add(this);
 		}
 	}
+
+	// 신청 승인시 권한 변경 메서드
+	public void approve() {
+		this.clubMemberRole = ClubMemberRole.MEMBER;
+	}
 }
