@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: ["Noto Sans KR", "sans-serif"], // Noto Sans KR 추가
+      },
     },
   },
   plugins: [],
