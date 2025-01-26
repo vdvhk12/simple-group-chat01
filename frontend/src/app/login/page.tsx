@@ -1,43 +1,77 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 export default function LoginPage() {
     const router = useRouter();
-    const { setAuth } = useAuth();
+    const { setAuth, isLoggedIn } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [connected, setConnected] = useState(false);
+    const stompClientRef = useRef<Client | null>(null);
+
+    const connectWebSocket = (userId: string) => {
+        const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/ws/chat`);
+        const client = new Client({
+            webSocketFactory: () => socket,
+            onConnect: () => {
+                setConnected(true);
+                console.log("WebSocket connected");
+                client.subscribe(`/topic/messages/${userId}`, (message) => {
+                    console.log("New message:", JSON.parse(message.body));
+                });
+            },
+        });
+
+        client.activate();
+        stompClientRef.current = client;
+    };
+
+    const disconnectWebSocket = () => {
+        stompClientRef.current?.deactivate();
+        setConnected(false);
+        console.log("WebSocket disconnected");
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
+                body: JSON.stringify({ username, password }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                setAuth(data.id, data.username); // 로그인 성공 시, 상태에 저장
-                router.push('/'); // 로그인 후 메인 페이지로 이동
+                setAuth(data.id, data.username);
+                connectWebSocket(data.id);
+                router.push('/');
             } else {
                 const data = await response.json();
-                setError(data.message || '로그인에 실패했습니다.');
+                setError(response.status === 401 ? "아이디 또는 비밀번호가 잘못되었습니다." : data.message || '로그인에 실패했습니다.');
             }
         } catch (error) {
             setError('서버와의 연결에 실패했습니다.');
         }
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push('/');
+        }
+        return () => {
+            stompClientRef.current?.deactivate();
+        };
+    }, [isLoggedIn]);
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-50">
