@@ -13,7 +13,7 @@ function Page() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">채팅방 목록</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-800">채팅방 목록</h1>
             <ChatRoomList memberId={userId} />
         </div>
     );
