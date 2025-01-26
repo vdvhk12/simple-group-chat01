@@ -1,7 +1,6 @@
 package com.chat.backend.domain.chatroom.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,9 +12,4 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 	@Query("SELECT c FROM ChatRoom c WHERE c.club.id IN " +
 		"(SELECT cm.club.id FROM ClubMember cm WHERE cm.member.id = :memberId)")
 	List<ChatRoom> findByMemberId(@Param("memberId") Long memberId);
-
-	@Query("SELECT c FROM ChatRoom c " +
-		"WHERE c.id = :chatRoomId AND c.club.id IN " +
-		"(SELECT cm.club.id FROM ClubMember cm WHERE cm.member.id = :memberId)")
-	Optional<ChatRoom> findByMemberIdAndChatRoomId(@Param("memberId") Long memberId, @Param("chatRoomId") Long chatRoomId);
 }
