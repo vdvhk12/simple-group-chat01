@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // useRouter for navigation
 import { ChatRoom } from "./types";
 
 interface ChatRoomListProps {
@@ -10,6 +11,7 @@ interface ChatRoomListProps {
 const ChatRoomList: React.FC<ChatRoomListProps> = ({ memberId }) => {
     const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchChatRooms = async () => {
@@ -43,7 +45,8 @@ const ChatRoomList: React.FC<ChatRoomListProps> = ({ memberId }) => {
                     {chatRooms.map((chatRoom) => (
                         <li
                             key={chatRoom.id}
-                            className="border border-gray-300 rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+                            onClick={() => router.push(`/chatrooms/${chatRoom.id}`)} // Navigate to the chat room
+                            className="border border-gray-300 rounded-lg p-4 bg-white shadow hover:shadow-md transition cursor-pointer"
                         >
                             <h3 className="text-xl font-semibold text-gray-800 mb-2">
                                 {chatRoom.club.name}
