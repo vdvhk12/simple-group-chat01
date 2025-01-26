@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // useRouter for navigation
+import { useRouter } from "next/navigation";
 import { ChatRoom } from "./types";
 
 interface ChatRoomListProps {
@@ -16,7 +16,7 @@ const ChatRoomList: React.FC<ChatRoomListProps> = ({ memberId }) => {
     useEffect(() => {
         const fetchChatRooms = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/chatrooms/${memberId}`);
+                const response = await fetch(`http://localhost:8080/api/v1/members/${memberId}/chatrooms`);
                 if (!response.ok) {
                     throw new Error("채팅방 목록을 불러오는 데 실패했습니다.");
                 }
