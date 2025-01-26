@@ -40,7 +40,7 @@ public class ChatRoomController {
 		@RequestParam(defaultValue = "20") int size) {
 
 		Pageable pageable = PageRequest.of(page, size); // 페이지 번호, 페이지 크기
-		Page<Message> messages = messageRepository.findByChatRoomIdOrderByCreatedAtDesc(id, pageable);
+		Page<Message> messages = messageRepository.findByChatRoomIdOrderByCreatedAt(id, pageable);
 		return ResponseEntity.ok(messages);
 	}
 }

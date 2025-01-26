@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.chat.backend.domain.message.entity.Message;
 
 public interface MessageRepository extends MongoRepository<Message, String> {
-	Page<Message> findByChatRoomIdOrderByCreatedAtDesc(Long chatRoomId, Pageable pageable);
+	Page<Message> findByChatRoomIdOrderByCreatedAt(Long chatRoomId, Pageable pageable);
 }
