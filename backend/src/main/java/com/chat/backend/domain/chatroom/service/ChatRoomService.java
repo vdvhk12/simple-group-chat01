@@ -24,8 +24,8 @@ public class ChatRoomService {
 	}
 
 	@Transactional(readOnly = true)
-	public ChatRoomDto getChatRoomByMemberIdAndChatRoomId(Long id, Long memberId) {
+	public ChatRoomDto getChatRoomByChatRoomId(Long id) {
 		return ChatRoomDto.from(
-			Objects.requireNonNull(chatRoomRepository.findByMemberIdAndChatRoomId(id, memberId).orElse(null)));
+			Objects.requireNonNull(chatRoomRepository.findById(id).orElse(null)));
 	}
 }
