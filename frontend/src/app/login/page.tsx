@@ -53,7 +53,7 @@ export default function LoginPage() {
             if (response.ok) {
                 const data = await response.json();
                 setAuth(data.id, data.username);
-                connectWebSocket(data.id);
+                // connectWebSocket(data.id);
                 router.push('/');
             } else {
                 const data = await response.json();
