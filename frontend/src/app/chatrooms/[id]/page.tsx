@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState, useRef, useContext} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { Client } from '@stomp/stompjs';
@@ -8,7 +8,7 @@ import SockJS from 'sockjs-client';
 import { ChatRoom } from "../types";
 
 interface Message {
-    id?: string;
+    id: string;
     senderId: number;
     senderName: string;
     content: string;
@@ -41,7 +41,7 @@ const ChatRoomDetail: React.FC = () => {
             try {
                 const [chatRoomResponse, messagesResponse] = await Promise.all([
                     fetch(`http://localhost:8080/api/v1/chatrooms/${id}`),
-                    fetch(`http://localhost:8080/api/v1/chatrooms/${id}/messages?page=0&size=20`)
+                    fetch(`http://localhost:8080/api/v1/chatrooms/${id}/messages`)
                 ]);
 
                 if (!chatRoomResponse.ok || !messagesResponse.ok) {
@@ -52,10 +52,13 @@ const ChatRoomDetail: React.FC = () => {
                 const messagesData = await messagesResponse.json();
 
                 setChatRoom(chatRoomData);
-                setMessages(messagesData.content);
+                setMessages(messagesData);
                 setLoading(false);
 
-                connectWebSocket(chatRoomData.id);
+                // 웹소켓 연결은 메시지가 불러와지고 나서 한 번만 이루어지도록
+                if (!clientRef.current) {
+                    connectWebSocket(chatRoomData.id);
+                }
             } catch (error) {
                 console.error("Error:", error);
                 setLoading(false);
@@ -67,6 +70,7 @@ const ChatRoomDetail: React.FC = () => {
         return () => {
             if (clientRef.current) {
                 clientRef.current.deactivate();
+                console.log("웹 소켓 연결 종료")
             }
         };
     }, [id]);
@@ -76,7 +80,6 @@ const ChatRoomDetail: React.FC = () => {
         const client = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
-                // 구독 경로 수정
                 client.subscribe(`/topic/chatroom/${chatRoomId}`, (message) => {
                     const receivedMessage: Message = JSON.parse(message.body);
                     setMessages((prevMessages) => [...prevMessages, receivedMessage]);

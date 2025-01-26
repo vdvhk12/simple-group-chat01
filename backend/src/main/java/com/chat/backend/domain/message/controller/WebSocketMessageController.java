@@ -17,7 +17,7 @@ public class WebSocketMessageController {
 
 	private final MessageRepository messageRepository;
 
-	// 클라이언트가 /app/chatroom/{id}/message 경로로 보내는 메시지를 처리
+	// 클라이언트가 /app/chat/{id} 경로로 보내는 메시지를 처리
 	@MessageMapping("/chat/{chatRoomId}")
 	@SendTo("/topic/chatroom/{chatRoomId}")
 	public Message sendMessage(@DestinationVariable String chatRoomId, MessageForm messageForm) {
