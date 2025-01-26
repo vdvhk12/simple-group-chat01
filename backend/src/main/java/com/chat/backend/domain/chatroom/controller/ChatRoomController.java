@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chat.backend.domain.chatroom.dto.ChatRoomDto;
+import com.chat.backend.domain.chatroom.dto.ChatRoomListDto;
 import com.chat.backend.domain.chatroom.service.ChatRoomService;
 import com.chat.backend.domain.message.entity.Message;
 import com.chat.backend.domain.message.repository.MessageRepository;
@@ -29,8 +30,8 @@ public class ChatRoomController {
 	private final MessageRepository messageRepository;
 
 	@GetMapping("/{id}")
-	public ResponseEntity<List<ChatRoomDto>> getChatRooms(@PathVariable("id") Long id) {
-		List<ChatRoomDto> chatRooms = chatRoomService.getChatRoomsByMemberId(id);
+	public ResponseEntity<List<ChatRoomListDto>> getChatRooms(@PathVariable("id") Long id) {
+		List<ChatRoomListDto> chatRooms = chatRoomService.getChatRoomsByMemberId(id);
 		return ResponseEntity.status(HttpStatus.OK).body(chatRooms);
 	}
 

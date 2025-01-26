@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.chat.backend.domain.chatroom.dto.ChatRoomDto;
+import com.chat.backend.domain.chatroom.dto.ChatRoomListDto;
 import com.chat.backend.domain.chatroom.repository.ChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ public class ChatRoomService {
 	private final ChatRoomRepository chatRoomRepository;
 
 	@Transactional(readOnly = true)
-	public List<ChatRoomDto> getChatRoomsByMemberId(Long memberId) {
-		return chatRoomRepository.findByMemberId(memberId).stream().map(ChatRoomDto::from).toList();
+	public List<ChatRoomListDto> getChatRoomsByMemberId(Long memberId) {
+		return chatRoomRepository.findByMemberId(memberId).stream().map(ChatRoomListDto::from).toList();
 	}
 
 	@Transactional(readOnly = true)
