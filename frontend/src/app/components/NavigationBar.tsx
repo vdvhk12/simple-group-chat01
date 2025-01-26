@@ -19,7 +19,7 @@ const NavigationBar = () => {
                 <>
                     <span className="text-white">{username}님</span>
                     <Link
-                        href="/chatroom"
+                        href="/chatrooms"
                         className="hover:text-indigo-300 transition"
                     >
                         채팅방 목록
